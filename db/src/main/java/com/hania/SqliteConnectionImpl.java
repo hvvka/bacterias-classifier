@@ -1,13 +1,13 @@
 package com.hania;
 
-import com.hania.examined.ExaminedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.*;
-import java.util.Objects;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -30,11 +30,9 @@ public class SqliteConnectionImpl implements SqliteConnection {
     }
 
     private void getDatabaseUrl() {
-        String rootPath = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-        String databaseConfigPath = rootPath + "database.properties";
         Properties databaseProperties = new Properties();
-        try {
-            databaseProperties.load(new FileInputStream(databaseConfigPath));
+        try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("database.properties")) {
+            databaseProperties.load(stream);
             String databaseDriver = databaseProperties.getProperty("database.driver");
             String databasePath = databaseProperties.getProperty("database.path");
             databaseUrl = databaseDriver + databasePath;
@@ -49,7 +47,6 @@ public class SqliteConnectionImpl implements SqliteConnection {
             try {
                 connection = DriverManager.getConnection(databaseUrl);
                 LOG.info("Connection to SQLite has been established.");
-//                connection.setAutoCommit(false);
             } catch (SQLException e) {
                 LOG.error("", e);
             }
@@ -63,40 +60,11 @@ public class SqliteConnectionImpl implements SqliteConnection {
     }
 
     @Override
-    public void disconnect() {
+    public void close() throws SQLException {
         if (connection != null) {
-            try {
-                connection.close();
-                connection = null;
-            } catch (SQLException e) {
-                LOG.error("", e);
-            }
+            connection.close();
+            LOG.info("Connection closed.");
+            connection = null;
         }
-    }
-
-    //todo delete
-    public static void main(String[] args) {
-        SqliteConnection sqliteConnection = new SqliteConnectionImpl();
-        Connection connection = sqliteConnection.connect();
-
-//        FlagellaService flagellaService = new FlagellaService(connection);
-//        flagellaService.add(new Flagella(1, "12", "43", "1"));
-//        flagellaService.add(new Flagella(1, "33", "24", "3"));
-//        flagellaService.add(new Flagella(1, "34", "54", "2"));
-//        flagellaService.add(new Flagella(1, "32", "43", "2"));
-//
-//        ToughnessService toughnessService = new ToughnessService(connection);
-//        toughnessService.add(new Toughness(1, "43", "23", "d"));
-//        toughnessService.add(new Toughness(1, "24", "43", "b"));
-//        toughnessService.add(new Toughness(1, "54", "12", "b"));
-//        toughnessService.add(new Toughness(1, "43", "43", "a"));
-//
-        ExaminedService examinedService = new ExaminedService(connection);
-//        examinedService.add(new Examined(1, "328734", "1d"));
-//        examinedService.add(new Examined(1, "653313", "3c"));
-//        examinedService.add(new Examined(1, "239322", "1c"));
-//        examinedService.add(new Examined(1, "853211", "2a"));
-        LOG.info("{}", examinedService.selectAll().get(0).getId());
-        sqliteConnection.disconnect();
     }
 }
