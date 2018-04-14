@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<examinedList>
+    <examined id="1">
+        <genotype>328734</genotype>
+        <classification>1d</classification>
+    </examined>
+    <examined id="2">
+        <genotype>653313</genotype>
+        <classification>3c</classification>
+    </examined>
+    <examined id="3">
+        <genotype>239322</genotype>
+        <classification>1c</classification>
+    </examined>
+    <examined id="4">
+        <genotype>853211</genotype>
+        <classification>2a</classification>
+    </examined>
+</examinedList>

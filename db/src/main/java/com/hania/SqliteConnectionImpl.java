@@ -47,6 +47,7 @@ public class SqliteConnectionImpl implements SqliteConnection {
             try {
                 connection = DriverManager.getConnection(databaseUrl);
                 LOG.info("Connection to SQLite has been established.");
+                connection.setAutoCommit(false);
             } catch (SQLException e) {
                 LOG.error("", e);
             }

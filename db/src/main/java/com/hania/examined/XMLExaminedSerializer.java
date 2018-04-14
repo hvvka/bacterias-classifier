@@ -1,31 +1,39 @@
 package com.hania.examined;
 
-import com.thoughtworks.xstream.XStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 
 public class XMLExaminedSerializer {
 
-    private XStream xStream;
+    private static final Logger LOG = LoggerFactory.getLogger(XMLExaminedSerializer.class);
 
-    public Examined read(File file) throws SerializationException {
-        xStream = new ExaminedXStream();
+    private JAXBContext jaxbContext;
+
+    public Examined read(File file) {
         try {
-            return (Examined) xStream.fromXML(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
-            throw new SerializationException(e.getMessage());
+            jaxbContext = JAXBContext.newInstance(Examined.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            return (Examined) jaxbUnmarshaller.unmarshal(file);
+        } catch (JAXBException e) {
+            LOG.error("", e);
         }
+        return null;
     }
 
-    public void save(File file, Examined order) throws SerializationException {
-        xStream = new ExaminedXStream();
+    public void save(File file, ExaminedList examinedList) {
         try {
-            xStream.toXML(order, new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
-            throw new SerializationException(e.getMessage());
+            jaxbContext = JAXBContext.newInstance(ExaminedList.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(examinedList, file);
+        } catch (JAXBException e) {
+            LOG.error("", e);
         }
     }
 }

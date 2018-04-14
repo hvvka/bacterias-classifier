@@ -1,5 +1,6 @@
 package com.hania;
 
+import com.hania.controller.MainController;
 import com.hania.examined.Examined;
 import com.hania.knn.NearestNeighbour;
 import org.slf4j.Logger;
@@ -13,8 +14,9 @@ public class Bacterias {
     private static final Logger LOG = LoggerFactory.getLogger(Bacterias.class);
 
     public static void main(String[] args) {
-        NearestNeighbour nearestNeighbour = new NearestNeighbour("328734");
-        Examined examined = nearestNeighbour.classify();
-        LOG.info("Class of {}: {}", examined.getGenotype(), examined.getClassification());
+//        NearestNeighbour nearestNeighbour = new NearestNeighbour("328734");
+//        Examined examined = nearestNeighbour.classify();
+//        LOG.info("Class of {}: {}", examined.getGenotype(), examined.getClassification());
+        new MainController();
     }
 }

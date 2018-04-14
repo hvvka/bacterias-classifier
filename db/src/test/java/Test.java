@@ -21,11 +21,12 @@ public class Test {
 
     //todo delete
     public static void main(String[] args) {
+
         try (SqliteConnection sqliteConnection = new SqliteConnectionImpl()) {
             Connection connection = sqliteConnection.connect();
             ExaminedService examinedService = new ExaminedService(connection);
-//            populateDatabase(connection);
             LOG.info("{}", examinedService.selectAll().get(0).getId());
+//            populateDatabase(connection);
         } catch (SQLException e) {
             LOG.error("", e);
         }
