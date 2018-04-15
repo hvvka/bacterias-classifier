@@ -4,6 +4,7 @@ import com.hania.SqliteConnection;
 import com.hania.SqliteConnectionImpl;
 import com.hania.toughness.Toughness;
 import com.hania.toughness.ToughnessService;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author <a href="mailto:226154@student.pwr.edu.pl">Hanna Grodzicka</a>
@@ -32,22 +34,28 @@ class ToughnessClassifier {
         this.gamma = gamma;
     }
 
-    String classify() {
+    String classify() throws NeighbourNotFoundException {
         List<Toughness> neighbours = getToughnessNeighbours();
         initMinMax(neighbours);
-        String nearestBeta = countNearestBeta(neighbours);
-        String nearestGamma = countNearestGamma(neighbours);
-        return neighbours.stream()
-                .filter(f -> f.getBeta().equals(nearestBeta) && f.getGamma().equals(nearestGamma))
-                .findFirst().get()
-                .getRank();
+        Pair<String, String> nearestNeighbour = countNearestNeighbour(neighbours);
+        return getNearestToughness(neighbours, nearestNeighbour);
+    }
+
+    private String getNearestToughness(List<Toughness> neighbours, Pair<String, String> nearestNeighbour)
+            throws NeighbourNotFoundException {
+        Optional<Toughness> nearestToughness = neighbours.stream()
+                .filter(f -> f.getBeta().equals(nearestNeighbour.getKey()) && f.getGamma().equals(nearestNeighbour.getValue()))
+                .findFirst();
+        if (nearestToughness.isPresent()) {
+            return nearestToughness.get().getRank();
+        } else throw new NeighbourNotFoundException();
     }
 
     private void initMinMax(List<Toughness> neighbours) {
-        minBeta = getMinBeta(neighbours);
-        maxBeta = getMaxBeta(neighbours);
-        minGamma = getMinGamma(neighbours);
-        maxGamma = getMaxGamma(neighbours);
+        minBeta = MinMaxUtil.getMinToughnessBeta(neighbours);
+        maxBeta = MinMaxUtil.getMaxToughnessBeta(neighbours);
+        minGamma = MinMaxUtil.getMinToughnessGamma(neighbours);
+        maxGamma = MinMaxUtil.getMaxToughnessGamma(neighbours);
     }
 
     private List<Toughness> getToughnessNeighbours() {
@@ -61,58 +69,20 @@ class ToughnessClassifier {
         return Collections.emptyList();
     }
 
-    private Integer getMinBeta(List<Toughness> neighbours) {
-        return neighbours.stream()
-                .map(f -> Integer.valueOf(f.getBeta()))
-                .min(Integer::compare)
-                .get();
-    }
-
-    private Integer getMaxBeta(List<Toughness> neighbours) {
-        return neighbours.stream()
-                .map(f -> Integer.valueOf(f.getBeta()))
-                .max(Integer::compare)
-                .get();
-    }
-
-    private Integer getMinGamma(List<Toughness> neighbours) {
-        return neighbours.stream()
-                .map(f -> Integer.valueOf(f.getGamma()))
-                .min(Integer::compare)
-                .get();
-    }
-
-    private Integer getMaxGamma(List<Toughness> neighbours) {
-        return neighbours.stream()
-                .map(f -> Integer.valueOf(f.getGamma()))
-                .max(Integer::compare)
-                .get();
-    }
-
-    private String countNearestBeta(List<Toughness> neighbours) {
+    private Pair<String, String> countNearestNeighbour(List<Toughness> neighbours) {
         Double distance;
-        Double currentMin = 999.9;
+        Double currentMin = Double.MAX_VALUE;
         String nearestBeta = null;
-        for (Toughness neighbour : neighbours) {
-            distance = countFlagellaDistance(neighbour);
-            if (distance < currentMin) {
-                nearestBeta = neighbour.getBeta();
-            }
-        }
-        return nearestBeta;
-    }
-
-    private String countNearestGamma(List<Toughness> neighbours) {
-        Double distance;
-        Double currentMin = 999.9;
         String nearestGamma = null;
         for (Toughness neighbour : neighbours) {
             distance = countFlagellaDistance(neighbour);
             if (distance < currentMin) {
+                nearestBeta = neighbour.getBeta();
                 nearestGamma = neighbour.getGamma();
+                currentMin = distance;
             }
         }
-        return nearestGamma;
+        return new Pair<>(nearestBeta, nearestGamma);
     }
 
     private double countFlagellaDistance(Toughness toughness) {

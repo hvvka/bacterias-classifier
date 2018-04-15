@@ -19,7 +19,7 @@ public class NearestNeighbour {
         toughnessClassifier = new ToughnessClassifier(getBeta(), getGamma());
     }
 
-    public Examined classify() {
+    public Examined classify() throws NeighbourNotFoundException {
         String flagella = flagellaClassifier.classify();
         String toughness = toughnessClassifier.classify();
         String classification = flagella + toughness;

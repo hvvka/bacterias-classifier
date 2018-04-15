@@ -17,8 +17,3 @@ CREATE TABLE Examined (
    genotype TEXT NOT NULL,
    class TEXT NOT NULL
 );
-
--- http://www.sqlitetutorial.net/sqlite-java/
--- http://www.sqlitetutorial.net/sqlite-java/create-database/
--- https://www.javatpoint.com/java-sqlite
-

@@ -4,11 +4,14 @@ import com.hania.SqliteConnection;
 import com.hania.SqliteConnectionImpl;
 import com.hania.examined.*;
 import com.hania.knn.NearestNeighbour;
+import com.hania.knn.NeighbourNotFoundException;
 import com.hania.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -29,6 +32,7 @@ public class MainController {
     private JButton classifyButton;
     private JButton addToListButton;
     private JList laterExaminedList;
+    private DefaultListModel<String> listModel;
     private JButton classifyAllButton;
     private JScrollPane examinedScrollPane;
     private JTable examinedTable;
@@ -62,8 +66,8 @@ public class MainController {
     private void closeConnection() {
         try {
             connection.close();
-        } catch (SQLException e1) {
-            ErrorMessageUtil.show(e1);
+        } catch (SQLException e) {
+            ErrorMessageUtil.show(e);
         }
     }
 
@@ -75,7 +79,9 @@ public class MainController {
         genotypeText = mainFrame.getGenotypeText();
         classifyButton = mainFrame.getClassifyButton();
         addToListButton = mainFrame.getAddToListButton();
+        listModel = new DefaultListModel<>();
         laterExaminedList = mainFrame.getLaterExaminedList();
+        laterExaminedList.setModel(listModel);
         classifyAllButton = mainFrame.getClassifyAllButton();
     }
 
@@ -88,6 +94,50 @@ public class MainController {
 
     private void initListeners() {
         addTestConnectionListener();
+        addClassifyListener();
+        addToListListener();
+        addClassifyAllListener();
+        deleteKeyListener();
+    }
+
+    private void deleteKeyListener() {
+        laterExaminedList.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    listModel.remove(laterExaminedList.getSelectedIndex());
+                    laterExaminedList.revalidate();
+                }
+            }
+        });
+    }
+
+    private void addClassifyAllListener() {
+        classifyAllButton.addActionListener(e -> {
+            for (int i = 0; i < listModel.size(); i++) {
+                addRecord(listModel.get(i));
+                commitChanges();
+            }
+            listModel.clear();
+        });
+    }
+
+    private void addToListListener() {
+        addToListButton.addActionListener(e -> {
+            String genotype = genotypeText.getText();
+            if (!"".equals(genotype)) {
+                listModel.addElement(genotype);
+            }
+        });
+    }
+
+    private void addClassifyListener() {
         classifyButton.addActionListener(e -> {
             String genotype = genotypeText.getText();
             if (!"".equals(genotype)) {
@@ -100,11 +150,19 @@ public class MainController {
         if (connection != null) {
             closeConnection();
             NearestNeighbour nearestNeighbour = new NearestNeighbour(genotype);
+            findNearestNeighbour(nearestNeighbour);
+        }
+    }
+
+    private void findNearestNeighbour(NearestNeighbour nearestNeighbour) {
+        try {
             Examined examined = nearestNeighbour.classify();
             connectDatabase();
             examinedService.add(examined);
-//            commitChanges();
+            commitChanges();
             updateTable();
+        } catch (NeighbourNotFoundException e) {
+            ErrorMessageUtil.show(e);
         }
     }
 

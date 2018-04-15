@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <examinedList>
     <examined id="1">
-        <genotype>328734</genotype>
-        <classification>1d</classification>
+        <genotype>123456</genotype>
+        <classification>1b</classification>
     </examined>
     <examined id="2">
-        <genotype>653313</genotype>
-        <classification>3c</classification>
+        <genotype>6543234</genotype>
+        <classification>2a</classification>
     </examined>
     <examined id="3">
-        <genotype>239322</genotype>
-        <classification>1c</classification>
+        <genotype>6543234321</genotype>
+        <classification>2a</classification>
     </examined>
     <examined id="4">
-        <genotype>853211</genotype>
+        <genotype>43255432</genotype>
+        <classification>2d</classification>
+    </examined>
+    <examined id="5">
+        <genotype>321432</genotype>
+        <classification>3d</classification>
+    </examined>
+    <examined id="6">
+        <genotype>5432333</genotype>
+        <classification>2d</classification>
+    </examined>
+    <examined id="7">
+        <genotype>43353453</genotype>
+        <classification>3b</classification>
+    </examined>
+    <examined id="8">
+        <genotype>123133</genotype>
+        <classification>1b</classification>
+    </examined>
+    <examined id="9">
+        <genotype>65646564</genotype>
         <classification>2a</classification>
     </examined>
 </examinedList>

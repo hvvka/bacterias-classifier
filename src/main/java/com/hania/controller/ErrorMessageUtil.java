@@ -1,8 +1,9 @@
 package com.hania.controller;
 
+import com.hania.knn.NeighbourNotFoundException;
+
 import javax.swing.*;
 import java.awt.*;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 /**
@@ -15,8 +16,14 @@ public class ErrorMessageUtil {
     }
 
     public static void show(SQLException e) {
-        String messageWrapped = "<html><body><p style='width: 400px;'>" + e.toString() + "</p></body></html>";
+        String messageWrapped = "<html><body><p style='width: 400px;'>" + e.getMessage() + "</p></body></html>";
         String title = "SQLException error!";
+        JOptionPane.showMessageDialog(new Frame(), messageWrapped, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void show(NeighbourNotFoundException e) {
+        String messageWrapped = "<html><body><p style='width: 400px;'>" + e.getMessage() + "</p></body></html>";
+        String title = "NeighbourNotFoundException error!";
         JOptionPane.showMessageDialog(new Frame(), messageWrapped, title, JOptionPane.ERROR_MESSAGE);
     }
 }
