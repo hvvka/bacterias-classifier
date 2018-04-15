@@ -1,7 +1,7 @@
 package com.hania.controller;
 
-import com.hania.SqliteConnection;
-import com.hania.SqliteConnectionImpl;
+import com.hania.DatabaseConnection;
+import com.hania.DatabaseConnectionImpl;
 import com.hania.examined.*;
 import com.hania.knn.NearestNeighbour;
 import com.hania.knn.NeighbourNotFoundException;
@@ -17,6 +17,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -120,12 +121,54 @@ public class MainController {
 
     private void addClassifyAllListener() {
         classifyAllButton.addActionListener(e -> {
-            for (int i = 0; i < listModel.size(); i++) {
-                addRecord(listModel.get(i));
-                commitChanges();
-            }
+            addAllRecords();
             listModel.clear();
         });
+    }
+
+    private void addAllRecords() {
+        if (connection != null) {
+            closeConnection();
+            NearestNeighbour nearestNeighbour;
+            List<Examined> examinedList = new ArrayList<>();
+            for (int i = 0; i < listModel.size(); i++) {
+                nearestNeighbour = new NearestNeighbour(listModel.get(i));
+                classifyBacteria(nearestNeighbour, examinedList);
+            }
+            insertExamined(examinedList);
+        }
+    }
+
+    private void classifyBacteria(NearestNeighbour nearestNeighbour, List<Examined> examinedList) {
+        try {
+            examinedList.add(nearestNeighbour.classify());
+        } catch (NeighbourNotFoundException e) {
+            ErrorMessageUtil.show(e);
+        }
+    }
+
+    private Examined classifyBacteria(NearestNeighbour nearestNeighbour) {
+        Examined examined = new Examined();
+        try {
+            examined = nearestNeighbour.classify();
+        } catch (NeighbourNotFoundException e) {
+            ErrorMessageUtil.show(e);
+        }
+        return examined;
+    }
+
+    private void insertExamined(List<Examined> examinedList) {
+        connectDatabase();
+        examinedService.add(examinedList);
+        commitChanges();
+        updateTable();
+    }
+
+    private void insertExamined(Examined examined) {
+        connectDatabase();
+        examinedService.add(examined);
+        commitChanges();
+        updateTable();
     }
 
     private void addToListListener() {
@@ -150,19 +193,8 @@ public class MainController {
         if (connection != null) {
             closeConnection();
             NearestNeighbour nearestNeighbour = new NearestNeighbour(genotype);
-            findNearestNeighbour(nearestNeighbour);
-        }
-    }
-
-    private void findNearestNeighbour(NearestNeighbour nearestNeighbour) {
-        try {
-            Examined examined = nearestNeighbour.classify();
-            connectDatabase();
-            examinedService.add(examined);
-            commitChanges();
-            updateTable();
-        } catch (NeighbourNotFoundException e) {
-            ErrorMessageUtil.show(e);
+            Examined examined = classifyBacteria(nearestNeighbour);
+            insertExamined(examined);
         }
     }
 
@@ -190,17 +222,17 @@ public class MainController {
     }
 
     private void testCustomDatabaseConnection(String databaseUrl) {
-        SqliteConnection sqliteConnection = new SqliteConnectionImpl(databaseUrl);
-        testConnection(sqliteConnection);
+        DatabaseConnection databaseConnection = new DatabaseConnectionImpl(databaseUrl);
+        testConnection(databaseConnection);
     }
 
     private void testDefaultDatabaseConnection() {
-        SqliteConnection sqliteConnection = new SqliteConnectionImpl();
-        testConnection(sqliteConnection);
+        DatabaseConnection databaseConnection = new DatabaseConnectionImpl();
+        testConnection(databaseConnection);
     }
 
-    private void testConnection(SqliteConnection sqliteConnection) {
-        connection = sqliteConnection.connect();
+    private void testConnection(DatabaseConnection databaseConnection) {
+        connection = databaseConnection.connect();
         if (connection != null) {
             examinedService = new ExaminedService(connection);
             databaseUrlText.setBackground(Color.GREEN);

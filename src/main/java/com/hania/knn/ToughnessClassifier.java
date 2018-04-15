@@ -1,7 +1,7 @@
 package com.hania.knn;
 
-import com.hania.SqliteConnection;
-import com.hania.SqliteConnectionImpl;
+import com.hania.DatabaseConnection;
+import com.hania.DatabaseConnectionImpl;
 import com.hania.toughness.Toughness;
 import com.hania.toughness.ToughnessService;
 import javafx.util.Pair;
@@ -59,8 +59,8 @@ class ToughnessClassifier {
     }
 
     private List<Toughness> getToughnessNeighbours() {
-        try (SqliteConnection sqliteConnection = new SqliteConnectionImpl()) {
-            Connection connection = sqliteConnection.connect();
+        try (DatabaseConnection databaseConnection = new DatabaseConnectionImpl()) {
+            Connection connection = databaseConnection.connect();
             ToughnessService toughnessService = new ToughnessService(connection);
             return toughnessService.selectAll();
         } catch (SQLException e) {

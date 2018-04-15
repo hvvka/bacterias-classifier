@@ -31,6 +31,31 @@ public class ExaminedService {
         }
     }
 
+    public void add(List<Examined> examinedList) {
+        StringBuilder stringBuilder = getQuery(examinedList);
+        try (PreparedStatement ps = connection.prepareStatement(stringBuilder.toString())) {
+            int i = 1;
+            for (Examined examined : examinedList) {
+                ps.setString(i++, examined.getGenotype());
+                ps.setString(i++, examined.getClassification());
+            }
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error("", e);
+        }
+    }
+
+    private StringBuilder getQuery(List<Examined> examinedList) {
+        String sql = "INSERT INTO Examined(id, genotype, class) VALUES";
+        StringBuilder stringBuilder = new StringBuilder(sql);
+        String value = "(null, ?, ?)";
+        for (int i = 0; i < examinedList.size() - 1; i++) {
+            stringBuilder.append(value).append(",");
+        }
+        stringBuilder.append(value).append(";");
+        return stringBuilder;
+    }
+
     public void update(Examined examined) {
         String sql = "UPDATE Examined SET genotype = ?, class = ? WHERE id = ?;";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -55,7 +80,7 @@ public class ExaminedService {
 
     public List<Examined> selectAll() {
         List<Examined> examinedList = new ArrayList<>();
-        String query = "SELECT * FROM Examined;";
+        String query = "CALL get_examined();";
         try (Statement statement = connection.createStatement();
              ResultSet result = statement.executeQuery(query)) {
             while (result.next()) {

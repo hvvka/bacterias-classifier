@@ -1,7 +1,7 @@
 package com.hania.knn;
 
-import com.hania.SqliteConnection;
-import com.hania.SqliteConnectionImpl;
+import com.hania.DatabaseConnection;
+import com.hania.DatabaseConnectionImpl;
 import com.hania.flagella.Flagella;
 import com.hania.flagella.FlagellaService;
 import javafx.util.Pair;
@@ -59,8 +59,8 @@ class FlagellaClassifier {
     }
 
     private List<Flagella> getFlagellaNeighbours() {
-        try (SqliteConnection sqliteConnection = new SqliteConnectionImpl()) {
-            Connection connection = sqliteConnection.connect();
+        try (DatabaseConnection databaseConnection = new DatabaseConnectionImpl()) {
+            Connection connection = databaseConnection.connect();
             FlagellaService flagellaService = new FlagellaService(connection);
             return flagellaService.selectAll();
         } catch (SQLException e) {
