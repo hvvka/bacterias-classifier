@@ -39,11 +39,12 @@ public class MainController {
     private JTable examinedTable;
     private DefaultTableModel tableModel;
 
+    private DatabaseConnection databaseConnection;
     private String databaseUrl;
-    private Connection connection;
     private ExaminedService examinedService;
 
     public MainController() {
+        databaseConnection = new DatabaseConnectionImpl();
         mainFrame = new MainFrame();
         mainFrame.addWindowListener(getWindowAdapter());
         databaseUrl = "";
@@ -65,10 +66,12 @@ public class MainController {
     }
 
     private void closeConnection() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            ErrorMessageUtil.show(e);
+        if (databaseConnection.getConnection() != null) {
+            try {
+                databaseConnection.close();
+            } catch (SQLException e) {
+                ErrorMessageUtil.show(e);
+            }
         }
     }
 
@@ -127,8 +130,7 @@ public class MainController {
     }
 
     private void addAllRecords() {
-        if (connection != null) {
-            closeConnection();
+        if (databaseConnection.getConnection() != null) {
             NearestNeighbour nearestNeighbour;
             List<Examined> examinedList = new ArrayList<>();
             for (int i = 0; i < listModel.size(); i++) {
@@ -158,14 +160,12 @@ public class MainController {
     }
 
     private void insertExamined(List<Examined> examinedList) {
-        connectDatabase();
         examinedService.add(examinedList);
         commitChanges();
         updateTable();
     }
 
     private void insertExamined(Examined examined) {
-        connectDatabase();
         examinedService.add(examined);
         commitChanges();
         updateTable();
@@ -190,8 +190,7 @@ public class MainController {
     }
 
     private void addRecord(String genotype) {
-        if (connection != null) {
-            closeConnection();
+        if (databaseConnection.getConnection() != null) {
             NearestNeighbour nearestNeighbour = new NearestNeighbour(genotype);
             Examined examined = classifyBacteria(nearestNeighbour);
             insertExamined(examined);
@@ -200,7 +199,7 @@ public class MainController {
 
     private void commitChanges() {
         try {
-            connection.commit();
+            databaseConnection.getConnection().commit();
         } catch (SQLException e) {
             ErrorMessageUtil.show(e);
         }
@@ -214,6 +213,7 @@ public class MainController {
     }
 
     private void connectDatabase() {
+        closeConnection();
         if (!"".equals(databaseUrl)) {
             testCustomDatabaseConnection(databaseUrl);
         } else {
@@ -222,19 +222,18 @@ public class MainController {
     }
 
     private void testCustomDatabaseConnection(String databaseUrl) {
-        DatabaseConnection databaseConnection = new DatabaseConnectionImpl(databaseUrl);
+        databaseConnection = new DatabaseConnectionImpl(databaseUrl);
         testConnection(databaseConnection);
     }
 
     private void testDefaultDatabaseConnection() {
-        DatabaseConnection databaseConnection = new DatabaseConnectionImpl();
+        databaseConnection = new DatabaseConnectionImpl();
         testConnection(databaseConnection);
     }
 
     private void testConnection(DatabaseConnection databaseConnection) {
-        connection = databaseConnection.connect();
-        if (connection != null) {
-            examinedService = new ExaminedService(connection);
+        if (databaseConnection.connect() != null) {
+            examinedService = new ExaminedService(databaseConnection.getConnection());
             databaseUrlText.setBackground(Color.GREEN);
             updateTable();
         } else databaseUrlText.setBackground(Color.RED);

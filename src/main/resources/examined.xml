@@ -5,63 +5,15 @@
         <classification>1b</classification>
     </examined>
     <examined id="2">
-        <genotype>234567</genotype>
+        <genotype>234456</genotype>
         <classification>2a</classification>
     </examined>
     <examined id="3">
-        <genotype>345678</genotype>
+        <genotype>654654</genotype>
         <classification>2a</classification>
     </examined>
     <examined id="4">
-        <genotype>456789</genotype>
+        <genotype>654388</genotype>
         <classification>2a</classification>
-    </examined>
-    <examined id="5">
-        <genotype>567890</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="6">
-        <genotype>098765</genotype>
-        <classification>1a</classification>
-    </examined>
-    <examined id="7">
-        <genotype>876543</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="8">
-        <genotype>765432</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="9">
-        <genotype>654321</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="10">
-        <genotype>333333</genotype>
-        <classification>3b</classification>
-    </examined>
-    <examined id="11">
-        <genotype>222222</genotype>
-        <classification>3b</classification>
-    </examined>
-    <examined id="12">
-        <genotype>333333</genotype>
-        <classification>3b</classification>
-    </examined>
-    <examined id="13">
-        <genotype>345345</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="14">
-        <genotype>676544</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="15">
-        <genotype>456456</genotype>
-        <classification>2a</classification>
-    </examined>
-    <examined id="16">
-        <genotype>234233</genotype>
-        <classification>2b</classification>
     </examined>
 </examinedList>
