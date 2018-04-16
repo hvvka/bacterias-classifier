@@ -16,4 +16,8 @@
         <genotype>654388</genotype>
         <classification>2a</classification>
     </examined>
+  <examined id="5">
+    <genotype>432432</genotype>
+    <classification>3d</classification>
+  </examined>
 </examinedList>

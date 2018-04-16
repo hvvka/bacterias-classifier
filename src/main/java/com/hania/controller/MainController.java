@@ -2,7 +2,10 @@ package com.hania.controller;
 
 import com.hania.DatabaseConnection;
 import com.hania.DatabaseConnectionImpl;
-import com.hania.examined.*;
+import com.hania.examined.Examined;
+import com.hania.examined.ExaminedList;
+import com.hania.examined.ExaminedService;
+import com.hania.examined.XMLExaminedSerializer;
 import com.hania.knn.NearestNeighbour;
 import com.hania.knn.NeighbourNotFoundException;
 import com.hania.view.MainFrame;
@@ -15,7 +18,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class MainController {
     private MainFrame mainFrame;
 
     private JTextField databaseUrlText;
+    private JTextField databaseDriverText;
     private JButton testConnectionButton;
     private JTextField genotypeText;
     private JButton classifyButton;
@@ -40,6 +43,7 @@ public class MainController {
     private DefaultTableModel tableModel;
 
     private DatabaseConnection databaseConnection;
+    private String databaseDriver;
     private String databaseUrl;
     private ExaminedService examinedService;
 
@@ -77,6 +81,7 @@ public class MainController {
 
     private void initComponents() {
         databaseUrlText = mainFrame.getDatabaseUrlText();
+        databaseDriverText = mainFrame.getDatabaseDriverText();
         testConnectionButton = mainFrame.getTestConnectionButton();
         examinedScrollPane = mainFrame.getExaminedScrollPane();
         createExaminedTable();
@@ -207,6 +212,7 @@ public class MainController {
 
     private void addTestConnectionListener() {
         testConnectionButton.addActionListener(e -> {
+            databaseDriver = databaseDriverText.getText();
             databaseUrl = databaseUrlText.getText();
             connectDatabase();
         });
@@ -214,15 +220,15 @@ public class MainController {
 
     private void connectDatabase() {
         closeConnection();
-        if (!"".equals(databaseUrl)) {
-            testCustomDatabaseConnection(databaseUrl);
+        if (!"".equals(databaseDriver) && !"".equals(databaseUrl)) {
+            testCustomDatabaseConnection(databaseDriver, databaseUrl);
         } else {
             testDefaultDatabaseConnection();
         }
     }
 
-    private void testCustomDatabaseConnection(String databaseUrl) {
-        databaseConnection = new DatabaseConnectionImpl(databaseUrl);
+    private void testCustomDatabaseConnection(String databaseDriver, String databaseUrl) {
+        databaseConnection = new DatabaseConnectionImpl(databaseDriver, databaseUrl);
         testConnection(databaseConnection);
     }
 
@@ -234,9 +240,13 @@ public class MainController {
     private void testConnection(DatabaseConnection databaseConnection) {
         if (databaseConnection.connect() != null) {
             examinedService = new ExaminedService(databaseConnection.getConnection());
+            databaseDriverText.setBackground(Color.GREEN);
             databaseUrlText.setBackground(Color.GREEN);
             updateTable();
-        } else databaseUrlText.setBackground(Color.RED);
+        } else {
+            databaseDriverText.setBackground(Color.RED);
+            databaseUrlText.setBackground(Color.RED);
+        }
     }
 
     private void updateTable() {

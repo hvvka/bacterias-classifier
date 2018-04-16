@@ -80,7 +80,8 @@ public class ExaminedService {
 
     public List<Examined> selectAll() {
         List<Examined> examinedList = new ArrayList<>();
-        String query = "CALL get_examined();";
+//        String query = "CALL get_examined();"; //SQLite has no procedures
+        String query = "SELECT * FROM Examined;";
         try (Statement statement = connection.createStatement();
              ResultSet result = statement.executeQuery(query)) {
             while (result.next()) {

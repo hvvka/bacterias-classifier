@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
     private JList laterExaminedList;
     private JButton classifyAllButton;
     private JScrollPane examinedScrollPane;
+    private JTextField databaseDriverText;
 
     public MainFrame() {
         super("Bacteria Classifier");
@@ -61,7 +62,7 @@ public class MainFrame extends JFrame {
         return examinedScrollPane;
     }
 
-    public void setExaminedScrollPane(JScrollPane examinedScrollPane) {
-        this.examinedScrollPane = examinedScrollPane;
+    public JTextField getDatabaseDriverText() {
+        return databaseDriverText;
     }
 }

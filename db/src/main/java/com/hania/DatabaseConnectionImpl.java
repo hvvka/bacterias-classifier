@@ -29,18 +29,20 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
     public DatabaseConnectionImpl() {
         getDatabaseProperties();
-        getDatabaseUrl();
+        getDatabaseDriverAndUrl();
     }
 
-    public DatabaseConnectionImpl(String databaseUrl) {
+    public DatabaseConnectionImpl(String databaseDriver, String databaseUrl) {
         getDatabaseProperties();
+        this.databaseDriver = databaseDriver;
         this.databaseUrl = databaseUrl;
     }
 
-    private void getDatabaseUrl() {
+    private void getDatabaseDriverAndUrl() {
         Properties databaseProperties = new Properties();
         try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("database.properties")) {
             databaseProperties.load(stream);
+            databaseDriver = databaseProperties.getProperty("database.driver");
             databaseUrl = databaseProperties.getProperty("database.url");
         } catch (IOException e) {
             LOG.error("", e);
@@ -51,7 +53,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
         Properties databaseProperties = new Properties();
         try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("database.properties")) {
             databaseProperties.load(stream);
-            databaseDriver = databaseProperties.getProperty("database.driver");
             username = databaseProperties.getProperty("database.username");
             password = databaseProperties.getProperty("database.password");
             maxPool = databaseProperties.getProperty("database.max-pool");
