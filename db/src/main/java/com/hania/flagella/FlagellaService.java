@@ -21,9 +21,9 @@ public class FlagellaService {
     }
 
     public void add(Flagella flagella) {
-        String sql = "INSERT INTO Flagella(id, alfa, beta, number) VALUES(null, ?, ?, ?);";
+        String sql = "INSERT INTO Flagella(id, alpha, beta, number) VALUES(null, ?, ?, ?);";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, flagella.getAlfa());
+            ps.setString(1, flagella.getAlpha());
             ps.setString(2, flagella.getBeta());
             ps.setString(3, flagella.getNumber());
             ps.executeUpdate();
@@ -33,9 +33,9 @@ public class FlagellaService {
     }
 
     public void update(Flagella flagella) {
-        String sql = "UPDATE Flagella SET alfa = ?, beta = ?, number = ? WHERE id = ?;";
+        String sql = "UPDATE Flagella SET alpha = ?, beta = ?, number = ? WHERE id = ?;";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, flagella.getAlfa());
+            ps.setString(1, flagella.getAlpha());
             ps.setString(2, flagella.getBeta());
             ps.setString(3, flagella.getNumber());
             ps.setInt(4, flagella.getId());
@@ -62,10 +62,10 @@ public class FlagellaService {
              ResultSet result = statement.executeQuery(query)) {
             while (result.next()) {
                 Integer id = result.getInt(1);
-                String alfa = result.getString("alfa");
+                String alpha = result.getString("alpha");
                 String beta = result.getString("beta");
                 String number = result.getString("number");
-                flagellaList.add(new Flagella(id, alfa, beta, number));
+                flagellaList.add(new Flagella(id, alpha, beta, number));
             }
         } catch (SQLException e) {
             LOG.error("", e);

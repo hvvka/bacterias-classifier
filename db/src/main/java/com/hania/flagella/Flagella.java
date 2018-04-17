@@ -7,21 +7,21 @@ public class Flagella {
 
     private Integer id;
 
-    private String alfa;
+    private String alpha;
 
     private String beta;
 
     private String number;
 
-    public Flagella(String alfa, String beta, String number) {
-        this.alfa = alfa;
+    public Flagella(String alpha, String beta, String number) {
+        this.alpha = alpha;
         this.beta = beta;
         this.number = number;
     }
 
-    public Flagella(Integer id, String alfa, String beta, String number) {
+    public Flagella(Integer id, String alpha, String beta, String number) {
         this.id = id;
-        this.alfa = alfa;
+        this.alpha = alpha;
         this.beta = beta;
         this.number = number;
     }
@@ -34,12 +34,12 @@ public class Flagella {
         this.id = id;
     }
 
-    public String getAlfa() {
-        return alfa;
+    public String getAlpha() {
+        return alpha;
     }
 
-    public void setAlfa(String alfa) {
-        this.alfa = alfa;
+    public void setAlpha(String alpha) {
+        this.alpha = alpha;
     }
 
     public String getBeta() {

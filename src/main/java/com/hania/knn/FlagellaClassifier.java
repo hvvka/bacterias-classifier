@@ -21,16 +21,16 @@ class FlagellaClassifier {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlagellaClassifier.class);
 
-    private Integer minAfla;
-    private Integer maxAfla;
+    private Integer minAlpha;
+    private Integer maxAlpha;
     private Integer minBeta;
     private Integer maxBeta;
 
-    private Integer alfa;
+    private Integer alpha;
     private Integer beta;
 
-    FlagellaClassifier(Integer alfa, Integer beta) {
-        this.alfa = alfa;
+    FlagellaClassifier(Integer alpha, Integer beta) {
+        this.alpha = alpha;
         this.beta = beta;
     }
 
@@ -44,7 +44,7 @@ class FlagellaClassifier {
     private String getNearestFlagella(List<Flagella> neighbours, Pair<String, String> nearestNeighbour)
             throws NeighbourNotFoundException {
         Optional<Flagella> nearestFlagella = neighbours.stream()
-                .filter(f -> f.getAlfa().equals(nearestNeighbour.getKey()) && f.getBeta().equals(nearestNeighbour.getValue()))
+                .filter(f -> f.getAlpha().equals(nearestNeighbour.getKey()) && f.getBeta().equals(nearestNeighbour.getValue()))
                 .findFirst();
         if (nearestFlagella.isPresent()) {
             return nearestFlagella.get().getNumber();
@@ -52,8 +52,8 @@ class FlagellaClassifier {
     }
 
     private void initMinMax(List<Flagella> neighbours) {
-        minAfla = MinMaxUtil.getMinFlagellaAfla(neighbours);
-        maxAfla = MinMaxUtil.getMaxFlagellaAfla(neighbours);
+        minAlpha = MinMaxUtil.getMinFlagellaAlpha(neighbours);
+        maxAlpha = MinMaxUtil.getMaxFlagellaAlpha(neighbours);
         minBeta = MinMaxUtil.getMinFlagellaBeta(neighbours);
         maxBeta = MinMaxUtil.getMaxFlagellaBeta(neighbours);
     }
@@ -72,28 +72,28 @@ class FlagellaClassifier {
     private Pair<String, String> countNearestNeighbour(List<Flagella> neighbours) {
         Double distance;
         Double currentMin = Double.MAX_VALUE;
-        String nearestAlfa = null;
+        String nearestAlpha = null;
         String nearestBeta = null;
         for (Flagella neighbour : neighbours) {
             distance = countFlagellaDistance(neighbour);
             if (distance < currentMin) {
-                nearestAlfa = neighbour.getAlfa();
+                nearestAlpha = neighbour.getAlpha();
                 nearestBeta = neighbour.getBeta();
                 currentMin = distance;
             }
         }
-        return new Pair<>(nearestAlfa, nearestBeta);
+        return new Pair<>(nearestAlpha, nearestBeta);
     }
 
     private double countFlagellaDistance(Flagella flagella) {
-        Integer alfaNeighbour = Integer.valueOf(flagella.getAlfa());
+        Integer alphaNeighbour = Integer.valueOf(flagella.getAlpha());
         Integer betaNeighbour = Integer.valueOf(flagella.getBeta());
-        return Math.sqrt(countAlfa(alfaNeighbour) + countBeta(betaNeighbour));
+        return Math.sqrt(countAlpha(alphaNeighbour) + countBeta(betaNeighbour));
     }
 
     // Normalized Euclidean Distance
-    private double countAlfa(Integer alfaNeighbour) {
-        return Math.pow((double) (alfa - alfaNeighbour) / (maxAfla - minAfla), 2);
+    private double countAlpha(Integer alphaNeighbour) {
+        return Math.pow((double) (alpha - alphaNeighbour) / (maxAlpha - minAlpha), 2);
     }
 
     private double countBeta(Integer betaNeighbour) {

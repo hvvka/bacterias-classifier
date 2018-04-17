@@ -27,8 +27,9 @@ import java.util.List;
  */
 public class MainController {
 
-    private MainFrame mainFrame;
+    private static final String XML_FILE_PATH = "src/main/resources/examined.xml";
 
+    private MainFrame mainFrame;
     private JTextField databaseUrlText;
     private JTextField databaseDriverText;
     private JButton testConnectionButton;
@@ -220,7 +221,7 @@ public class MainController {
 
     private void connectDatabase() {
         closeConnection();
-        if (!"".equals(databaseDriver) && !"".equals(databaseUrl)) {
+        if (!"".equals(databaseDriver) || !"".equals(databaseUrl)) {
             testCustomDatabaseConnection(databaseDriver, databaseUrl);
         } else {
             testDefaultDatabaseConnection();
@@ -246,6 +247,7 @@ public class MainController {
         } else {
             databaseDriverText.setBackground(Color.RED);
             databaseUrlText.setBackground(Color.RED);
+            clearTable();
         }
     }
 
@@ -270,7 +272,7 @@ public class MainController {
     private void serializeInBackground(List<Examined> examinedList) {
         Runnable serializeExaminedList = () -> {
             XMLExaminedSerializer xmlExaminedSerializer = new XMLExaminedSerializer();
-            xmlExaminedSerializer.save(new File("src/main/resources/examined.xml"), new ExaminedList(examinedList));
+            xmlExaminedSerializer.save(new File(XML_FILE_PATH), new ExaminedList(examinedList));
         };
         new Thread(serializeExaminedList).start();
     }

@@ -15,7 +15,7 @@ public class NearestNeighbour {
 
     public NearestNeighbour(String genotype) {
         this.genotype = genotype;
-        flagellaClassifier = new FlagellaClassifier(getAlfa(), getBeta());
+        flagellaClassifier = new FlagellaClassifier(getAlpha(), getBeta());
         toughnessClassifier = new ToughnessClassifier(getBeta(), getGamma());
     }
 
@@ -26,7 +26,7 @@ public class NearestNeighbour {
         return new Examined(this.genotype, classification);
     }
 
-    private Integer getAlfa() {
+    private Integer getAlpha() {
         return Integer.valueOf(String.valueOf(genotype.charAt(0)) + String.valueOf(genotype.charAt(5)));
     }
 

@@ -5,19 +5,15 @@
         <classification>1b</classification>
     </examined>
     <examined id="2">
-        <genotype>234456</genotype>
+      <genotype>234567</genotype>
         <classification>2a</classification>
     </examined>
     <examined id="3">
-        <genotype>654654</genotype>
-        <classification>2a</classification>
+      <genotype>142332</genotype>
+      <classification>1d</classification>
     </examined>
     <examined id="4">
-        <genotype>654388</genotype>
-        <classification>2a</classification>
+      <genotype>324252</genotype>
+      <classification>3b</classification>
     </examined>
-  <examined id="5">
-    <genotype>432432</genotype>
-    <classification>3d</classification>
-  </examined>
 </examinedList>

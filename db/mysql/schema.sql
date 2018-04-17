@@ -11,7 +11,7 @@ USE bacterias;
 
 CREATE TABLE Flagella (
   id     int(20) NOT NULL AUTO_INCREMENT,
-  alfa   char(2) NOT NULL,
+  alpha  char(2) NOT NULL,
   beta   char(2) NOT NULL,
   number char(1) NOT NULL,
   PRIMARY KEY (id)
@@ -33,7 +33,7 @@ CREATE TABLE Examined (
 );
 
 INSERT INTO Flagella
-(id, alfa, beta, number)
+(id, alpha, beta, number)
 VALUES
   (null, '12', '43', '1'),
   (null, '33', '24', '3'),
